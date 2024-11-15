@@ -35863,6 +35863,41 @@ var __webpack_exports__ = {};
 const core = __nccwpck_require__(7484);
 const axios = __nccwpck_require__(7269);
 
+function safeJsonParse(response, parseRule) {
+    try {
+        // 1. 确保response.data存在
+        const data = response.data || response;
+        
+        // 2. 使用安全的链式访问
+        const pathParts = parseRule.split('.');
+        let result = data;
+        
+        for (const part of pathParts) {
+            if (!result) return null;
+            
+            // 处理数组访问 (例如 choices[0])
+            if (part.includes('[')) {
+                const [arrayName, indexStr] = part.split('[');
+                const index = parseInt(indexStr);
+                
+                result = result[arrayName];
+                if (Array.isArray(result) && result.length > index) {
+                    result = result[index];
+                } else {
+                    return null;
+                }
+            } else {
+                result = result[part];
+            }
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('解析错误:', error);
+        return null;
+    }
+}
+
 async function run() {
   try {
     // 获取输入
@@ -35889,7 +35924,7 @@ async function run() {
     if (parseRule) {
       try {
         // 使用 Function 构造动态函数来解析响应数据
-        parsedResult = new Function('response', `return response.${parseRule};`)(response.data);
+        parsedResult = safeJsonParse(response.data, parseRule);
       } catch (error) {
         parsedResult = `Failed to parse with rule "${parseRule}": ${error.message}`;
       }
