@@ -4,13 +4,14 @@ const axios = require('axios');
 function safeJsonParse(response, parseRule) {
     try {
         // 1. 确保response.data存在
-        const data = response.data || response;
+        const data = response
         
         // 2. 使用安全的链式访问
         const pathParts = parseRule.split('.');
         let result = data;
         
         for (const part of pathParts) {
+            console.log(part)
             if (!result) return null;
             
             // 处理数组访问 (例如 choices[0])
