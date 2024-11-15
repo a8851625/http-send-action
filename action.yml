@@ -27,5 +27,5 @@ outputs:
     description: "Parsed result from response based on the parseRule"
 
 runs:
-  using: "node16"       # 指定 Node.js 版本
-  main: "index.js"      # 入口文件
+  using: "node18"       # 指定 Node.js 版本
+  main: "dist/index.js"      # 入口文件
