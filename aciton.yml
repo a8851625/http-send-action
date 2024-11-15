@@ -1,0 +1,31 @@
+name: "HTTP Request Action"
+description: "An Action to send HTTP requests and parse responses."
+inputs:
+  url:
+    description: "The URL to send the HTTP request to"
+    required: true
+  method:
+    description: "HTTP method to use (GET, POST, etc.)"
+    required: false
+    default: "GET"
+  headers:
+    description: "Optional HTTP headers as a JSON string"
+    required: false
+  body:
+    description: "Optional request body for POST/PUT requests"
+    required: false
+  parse:
+    description: "The path to the desired response json data (e.g., data[0].obj.name)"
+    required: false
+    default: ""
+outputs:
+  status:
+    description: "HTTP status code of the response"
+  response:
+    description: "Response body as JSON"
+  parsedResult:
+    description: "Parsed result from response based on the parseRule"
+
+runs:
+  using: "node16"       # 指定 Node.js 版本
+  main: "index.js"      # 入口文件
