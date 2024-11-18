@@ -24,10 +24,20 @@ This GitHub Action allows you to make HTTP requests and parse the response data.
 
 ```yaml
 - name: Make HTTP Request
-  uses: your-username/http-request-action@v1
+  uses: a8851625/http-send-action@v0.0.1
+  id: req1
   with:
     url: 'https://api.example.com/data'
     method: 'POST'
     headers: '{"Authorization": "Bearer token123"}'
     body: '{"key": "value"}'
-    parse: 'data.items[0].id'
+    parse: 'data.items[0].content'
+
+- name: Send Notification To Feishu
+id: send_feishu
+uses: a8851625/http-send-action@v0.0.1
+with:
+    url: ${{ secrets.FEISHU_WEBHOOK_URL }}
+    headers: '{"Content-Type": "application/json"}'
+    body: '{"title": "天气预报", "msg_type": "text","content": {"text": ${{ toJSON(steps.req1.outputs.parsedResult) }} }}'
+    method: 'POST'
