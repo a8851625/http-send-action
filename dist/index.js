@@ -35864,39 +35864,44 @@ const core = __nccwpck_require__(7484);
 const axios = __nccwpck_require__(7269);
 
 function safeJsonParse(response, parseRule) {
-    try {
-        // 1. 确保response.data存在
-        const data = response
-        
-        // 2. 使用安全的链式访问
-        const pathParts = parseRule.split('.');
-        let result = data;
-        
-        for (const part of pathParts) {
-            console.log(part)
-            if (!result) return null;
-            
-            // 处理数组访问 (例如 choices[0])
-            if (part.includes('[')) {
-                const [arrayName, indexStr] = part.split('[');
-                const index = parseInt(indexStr);
-                
-                result = result[arrayName];
-                if (Array.isArray(result) && result.length > index) {
-                    result = result[index];
-                } else {
-                    return null;
-                }
-            } else {
-                result = result[part];
-            }
-        }
-        
-        return result;
-    } catch (error) {
-        console.error('解析错误:', error);
-        return null;
-    }
+  try {
+      // 1. 确保response.data存在
+      const data = response;
+
+      // 2. 如果 parseRule 为 "."，则直接返回 data (response)
+      if (parseRule === "." || parseRule === "") {
+          return data;
+      }
+
+      // 3. 使用安全的链式访问
+      const pathParts = parseRule.split('.');
+      let result = data;
+
+      for (const part of pathParts) {
+          console.log(part);
+          if (!result) return null;
+
+          // 处理数组访问 (例如 choices[0])
+          if (part.includes('[')) {
+              const [arrayName, indexStr] = part.split('[');
+              const index = parseInt(indexStr);
+
+              result = result[arrayName];
+              if (Array.isArray(result) && result.length > index) {
+                  result = result[index];
+              } else {
+                  return null;
+              }
+          } else {
+              result = result[part];
+          }
+      }
+
+      return result;
+  } catch (error) {
+      console.error('解析错误:', error);
+      return null;
+  }
 }
 
 async function run() {
@@ -35918,7 +35923,7 @@ async function run() {
 
     // 设置完整响应
     core.setOutput('status', response.status);
-    core.setOutput('response', JSON.stringify(response.data));
+    core.setOutput('response', JSON.stringify(JSON.stringify(response.data)));
 
     // 处理用户自定义解析（若提供了 parseRule）
     let parsedResult;
@@ -35934,7 +35939,7 @@ async function run() {
     }
 
     // 设置辅助解析结果的输出
-    core.setOutput('parsedResult', parsedResult);
+    core.setOutput('parsedResult', JSON.stringify(JSON.stringify(parsedResult)));
 
   } catch (error) {
     core.setFailed(`Request failed: ${error.message}`);
