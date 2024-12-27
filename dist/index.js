@@ -35923,7 +35923,7 @@ async function run() {
 
     // 设置完整响应
     core.setOutput('status', response.status);
-    core.setOutput('response', JSON.stringify(JSON.stringify(response.data)));
+    core.setOutput('response', JSON.stringify(response.data));
 
     // 处理用户自定义解析（若提供了 parseRule）
     let parsedResult;
@@ -35939,7 +35939,7 @@ async function run() {
     }
 
     // 设置辅助解析结果的输出
-    core.setOutput('parsedResult', JSON.stringify(JSON.stringify(parsedResult)));
+    core.setOutput('parsedResult', JSON.stringify(parsedResult));
 
   } catch (error) {
     core.setFailed(`Request failed: ${error.message}`);
