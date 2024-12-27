@@ -77,7 +77,7 @@ async function run() {
     }
 
     // 设置辅助解析结果的输出
-    core.setOutput('parsedResult', JSON.stringify(parsedResult));
+    core.setOutput('parsedResult', parsedResult);
 
   } catch (error) {
     core.setFailed(`Request failed: ${error.message}`);
